@@ -1,5 +1,5 @@
 ---
-title: "ds-tips"
+title: "Data Science Tips"
 listing:
   contents: posts
   sort: "date desc"
