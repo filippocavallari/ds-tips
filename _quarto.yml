@@ -1,0 +1,18 @@
+project:
+  type: website
+
+website:
+  title: "Data Science Tips"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/filippocavallari/ds-tips
+format:
+  html:
+    theme: cosmo
+    highlight-style: atom-one
+    css: styles.css
+
+
+

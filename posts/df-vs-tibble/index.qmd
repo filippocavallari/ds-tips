@@ -1,0 +1,112 @@
+---
+title: "Data Frame vs Tibble"
+author: "Filippo Cavallari"
+date: "2024-12-13"
+categories: [r, data.frame, tibble]
+image: "image.jpg"
+---
+
+```{r}
+#| warning: false
+library(tidyverse)
+```
+
+# Data Frames
+
+By default R provides a data structure, called `data.frame`, to store and
+manipulate tabular data. A `data.frame` is a list of equal-length vectors.
+
+Creating a `data.frame` is as easy as
+
+```{r}
+#| collapse: true
+data.frame(c("A", "B", "C", "D", "E"),
+           1:5)
+```
+
+The elements of a `data.frame` will be named automatically (see [binding basics](https://adv-r.hadley.nz/names-values.html#binding-basics)).
+Custom names can be used:
+
+```{r}
+#| collapse: true
+data.frame(letters = c("A", "B", "C", "D", "E"),
+           numbers = 1:5)
+```
+
+`dplyr` verbs can be used on data frames. For example
+
+```{r}
+#| collapse: true
+data.frame(letters = c("A", "B", "C", "D", "E"),
+           numbers = 1:5) |>
+  select(letters)
+
+data.frame(letters = c("A", "B", "C", "D", "E"),
+           numbers = 1:5) |>
+  filter(letters %in% c("A", "E") | numbers == 4)
+```
+
+# Tibbles
+
+A `tibble` can be created using the same pattern but with a different function:
+
+```{r}
+#| collapse: true
+tibble(letters = c("A", "B", "C", "D", "E"),
+       numbers = 1:5)
+
+tibble(letters = c("A", "B", "C", "D", "E"),
+       numbers = 1:5) |>
+  filter(letters %in% c("A", "E") | numbers == 4)
+```
+
+# Differences
+
+The first difference between `data.frame` and `tibble` is about printing:
+tibbles have a print method that shows only the first 10 rows, and all the
+columns that fit on screen. This makes it much easier to work with large data.
+In addition to its name, each column reports its type.
+
+The second difference is about subsetting. Data frames allow partial matching
+
+```{r}
+#| collapse: true
+data <- data.frame(letters = c("A", "B", "C", "D", "E"),
+                   numbers = 1:5)
+
+data$let
+```
+
+On the other hand, tibble are more strict about subsetting:
+
+```{r}
+#| collapse: true
+#| error: true
+data <- tibble(letters = c("A", "B", "C", "D", "E"),
+               numbers = 1:5)
+
+data$let
+```
+
+This can be very helpful, especially when debugging code, because the message
+tells use where the problem is. Look at what happens in the following example:
+
+```{r}
+#| collapse: true
+data <- data.frame(letters_upper = c("A", "B", "C", "D", "E"),
+                   letters_lower = c("a", "b", "c", "d", "e"),
+                   numbers = 1:5)
+
+data$let
+```
+
+Since more than one column name partially matches the string `let`, subsetting
+returns `NULL` without generating a warning.
+
+# References
+
+- [R for Data Science](https://r4ds.hadley.nz/)
+
+- [Tibble](https://tibble.tidyverse.org/index.html) package 
+
+- [Tibble](https://posit.co/blog/tibble-1-0-0/) from Posit blog

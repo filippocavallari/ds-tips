@@ -1,0 +1,10 @@
+/.quarto/
+
+/_*.local
+
+_site
+
+_freeze
+
+
+.Rproj.user
