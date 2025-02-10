@@ -6,15 +6,11 @@ categories: [r, data.frame, tibble]
 image: "image.jpg"
 ---
 
-```{r}
-#| warning: false
-library(tidyverse)
-```
-
 # Data Frames
 
 By default R provides a data structure, called `data.frame`, to store and
-manipulate tabular data. A `data.frame` is a list of equal-length vectors.
+manipulate tabular data. A `data.frame` is a **list** of equal-length
+**vectors**.
 
 Creating a `data.frame` is as easy as
 
@@ -24,7 +20,10 @@ data.frame(c("A", "B", "C", "D", "E"),
            1:5)
 ```
 
-The elements of a `data.frame` will be named automatically (see [binding basics](https://adv-r.hadley.nz/names-values.html#binding-basics)).
+The elements of a `data.frame` will be named automatically (see
+[binding basics](https://adv-r.hadley.nz/names-values.html#binding-basics) for
+more details).
+
 Custom names can be used:
 
 ```{r}
@@ -33,17 +32,17 @@ data.frame(letters = c("A", "B", "C", "D", "E"),
            numbers = 1:5)
 ```
 
-`dplyr` verbs can be used on data frames. For example
+`dplyr` verbs work as expected on data frames. For example:
 
 ```{r}
 #| collapse: true
 data.frame(letters = c("A", "B", "C", "D", "E"),
            numbers = 1:5) |>
-  select(letters)
+  dplyr::select(letters)
 
 data.frame(letters = c("A", "B", "C", "D", "E"),
            numbers = 1:5) |>
-  filter(letters %in% c("A", "E") | numbers == 4)
+  dplyr::filter(letters %in% c("A", "E") | numbers == 4)
 ```
 
 # Tibbles
@@ -52,12 +51,12 @@ A `tibble` can be created using the same pattern but with a different function:
 
 ```{r}
 #| collapse: true
-tibble(letters = c("A", "B", "C", "D", "E"),
-       numbers = 1:5)
+tibble::tibble(letters = c("A", "B", "C", "D", "E"),
+               numbers = 1:5)
 
-tibble(letters = c("A", "B", "C", "D", "E"),
-       numbers = 1:5) |>
-  filter(letters %in% c("A", "E") | numbers == 4)
+tibble::tibble(letters = c("A", "B", "C", "D", "E"),
+               numbers = 1:5) |>
+  dplyr::filter(letters %in% c("A", "E") | numbers == 4)
 ```
 
 # Differences
@@ -68,6 +67,7 @@ columns that fit on screen. This makes it much easier to work with large data.
 In addition to its name, each column reports its type.
 
 The second difference is about subsetting. Data frames allow partial matching
+for column names:
 
 ```{r}
 #| collapse: true
@@ -77,13 +77,13 @@ data <- data.frame(letters = c("A", "B", "C", "D", "E"),
 data$let
 ```
 
-On the other hand, tibble are more strict about subsetting:
+On the other hand, tibble are more strict about subsetting, and
 
 ```{r}
 #| collapse: true
 #| error: true
-data <- tibble(letters = c("A", "B", "C", "D", "E"),
-               numbers = 1:5)
+data <- tibble::tibble(letters = c("A", "B", "C", "D", "E"),
+                       numbers = 1:5)
 
 data$let
 ```
@@ -101,7 +101,29 @@ data$let
 ```
 
 Since more than one column name partially matches the string `let`, subsetting
-returns `NULL` without generating a warning.
+returns `NULL` without generating a warning. It would be more difficult to
+debug a bigger chunck of code if this technique is used. Therefore it's
+advisable to avoid partial matching when subsetting. Tibbles are good because
+they forbid us to use it.
+
+# Tribbles
+
+Finally, the `tibble` package includes the function `tribble` to define tibbles
+by row rather than by column. This is useful for small tables of data where
+readability is important.
+
+For example:
+
+```{r}
+#| collapse: true
+tibble::tribble(~letters, ~numbers,
+                "A",1,
+                "B",2,
+                "C",3,
+                "D",4,
+                "E",5)
+```
+
 
 # References
 
